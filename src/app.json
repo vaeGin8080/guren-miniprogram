@@ -1,0 +1,52 @@
+{
+  "pages": [
+    "pages/index/main",
+    "pages/membersArea/main",
+    "pages/orderForm/main",
+    "pages/shoppingCart/main",
+    "pages/personal/main",
+    "pages/contactUs/main",
+    "pages/buyCard/main",
+    "pages/noMembers/main"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "古仁农场",
+    "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "color": "#999",
+    "backgroundColor": "#fff",
+    "selectedColor": "#11998e",
+    "borderStyle": "white",
+
+    "list": [{
+      "text": "首页",
+      "pagePath": "pages/index/main",
+      "iconPath": "static/tabs/index.png",
+      "selectedIconPath": "static/tabs/index-a.png"
+    }, {
+      "text": "会员区",
+      "pagePath": "pages/membersArea/main",
+      "iconPath": "static/tabs/member.png",
+      "selectedIconPath": "static/tabs/member-a.png"
+    }, {
+      "text": "订单",
+      "pagePath": "pages/orderForm/main",
+      "iconPath": "static/tabs/order.png",
+      "selectedIconPath": "static/tabs/order-a.png"
+    }, {
+      "text": "购物车",
+      "pagePath": "pages/shoppingCart/main",
+      "iconPath": "static/tabs/cart.png",
+      "selectedIconPath": "static/tabs/cart-a.png"
+    }, {
+      "text": "我的",
+      "pagePath": "pages/personal/main",
+      "iconPath": "static/tabs/mine.png",
+      "selectedIconPath": "static/tabs/mine-a.png"
+    }],
+    "position": "bottom"
+  }
+}
