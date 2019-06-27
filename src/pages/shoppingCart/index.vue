@@ -22,7 +22,7 @@
             </div>
           </van-cell>
           <view slot="right" class="rightbtn">
-            <div class="right-del">删除</div>
+            <div class="right-del" @click="delet" :data-pid="item.pid">删除</div>
           </view>
         </van-swipe-cell>
       </div>
@@ -44,7 +44,7 @@
 export default {
   data() {
     return {
-      host: "http://guren.host30.voosite.com",
+      host: this.$host,
       selectAll: true,
       cartList: [],
       totalMoney: 0,
@@ -80,9 +80,16 @@ export default {
     getTotalPrice() {
       let that = this
       that.totalMoney = (that.$store.getters.getTotalPrice) * 100
+    },
+    delet(e) {
+      let that = this
+      console.log(e.target.dataset.pid)
+      that.$store.commit("deletShop", e.target.dataset.pid)
+      that.getCartList()
+      that.getTotalPrice()
     }
   },
-  mounted() {
+  onLoad() {
     this.getCartList()
   },
   onShow() {

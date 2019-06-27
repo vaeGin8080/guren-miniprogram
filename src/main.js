@@ -5,6 +5,7 @@ import store from './store/store'
 import 'font-awesome/css/font-awesome.min.css'
 Vue.prototype.$fly = fly
 Vue.prototype.$store = store
+Vue.prototype.$host = "http://www.51yst.cn"
 Vue.config.productionTip = false
 App.mpType = 'app'
 

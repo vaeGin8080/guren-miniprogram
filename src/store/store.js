@@ -62,6 +62,15 @@ const store = new Vuex.Store({
         item.selected = flag
       })
       wx.setStorageSync('cart', state.cart)
+    },
+    deletShop(state, pid) {
+      state.cart.map((item, i) => {
+        if (item.pid === pid) {
+          state.cart.splice(i, 1)
+        }
+        return true
+      })
+      wx.setStorageSync('cart', state.cart)
     }
   },
   getters: {

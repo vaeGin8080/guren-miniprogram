@@ -61,7 +61,7 @@ export default {
       currentCol: '3416',
       tabList: [],
       activeTab: 0,
-      host: "http://guren.host30.voosite.com",
+      host: this.$host,
       page: 1,
       rows: 10,
       goodsList: [],

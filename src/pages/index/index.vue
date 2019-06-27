@@ -10,20 +10,20 @@
     </swiper>
     <van-cell-group :border="false">
       <van-cell title="会员下单" label="Members place orders">
-        <van-icon slot="right-icon" class="custom-icon" size="36px" name="http://guren.host30.voosite.com/images/guren/1.png" @click="pageTo('membersArea')"/>
+        <van-icon slot="right-icon" class="custom-icon" size="36px" :name="host + '/images/guren/1.png'" @click="pageTo('membersArea')"/>
       </van-cell>
       <van-cell title="非会员下单" label="Non-member Order">
-        <van-icon slot="right-icon" class="custom-icon" size="36px" name="http://guren.host30.voosite.com/images/guren/2.png" @click="pageTo('noMembers')"/>
+        <van-icon slot="right-icon" class="custom-icon" size="36px" :name="host + '/images/guren/2.png'" @click="pageTo('noMembers')"/>
       </van-cell>
       <van-cell title="充值/购卡" label="Recharge/purchase card">
-        <van-icon slot="right-icon" class="custom-icon" size="36px" name="http://guren.host30.voosite.com/images/guren/3.png" @click="pageTo('buyCard')"/>
+        <van-icon slot="right-icon" class="custom-icon" size="36px" :name="host + '/images/guren/3.png'" @click="pageTo('buyCard')"/>
       </van-cell>
       <van-cell title="联系我们" label="Contact us" :border="false">
-        <van-icon slot="right-icon" class="custom-icon" size="36px" name="http://guren.host30.voosite.com/images/guren/4.png" @click="pageTo('contactUs')"/>
+        <van-icon slot="right-icon" class="custom-icon" size="36px" :name="host + '/images/guren/4.png'" @click="pageTo('contactUs')"/>
       </van-cell>
     </van-cell-group>
     <div class="ad">
-      <img src="http://guren.host30.voosite.com/usr/2360/images/S_Ad/1912180_20190619180551.png">
+      <img :src="host + '/usr/2360/images/S_Ad/1912180_20190619180551.png'">
     </div>
   </div>
 </template>
@@ -32,7 +32,7 @@
 export default {
   data () {
     return {
-      host: "http://guren.host30.voosite.com",
+      host: this.$host,
       swiperArr: [],
       indicatorDots: true,
       autoplay: true,

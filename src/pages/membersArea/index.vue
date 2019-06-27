@@ -17,8 +17,8 @@
         <scroll-view class="scroll-view" :scroll-y="true" :style="{ height: scrollViewHeight + 'rpx' }" enable-back-to-top="true" :scroll-into-view="scrollTarget" :scroll-with-animation="true" @scroll="scroll">
           <div class="block" v-for="(item, index) in shopList" :key="index" :id="'item' + index">
             <div :id="'item' + item.id" class="tit"><span class="name">{{ item.name }}</span><span class="block-line"></span></div>
-            <div class="shop-item" v-for="(shop, i) in item.dataList" :key="i" @click="showDetail(shop, item.dataList, i)">
-              <div class="shop-img">
+            <div class="shop-item" v-for="(shop, i) in item.dataList" :key="i" >
+              <div class="shop-img" @click="showDetail(shop, item.dataList, i)">
                 <img :src="host + shop.P_LImage" mode="widthFix">
               </div>
               <div class="shop-info">
@@ -26,7 +26,7 @@
                 <p class="desc">规格：<span>{{ shop.OVF_Field1 }}</span></p>
                 <div>
                   <span class="price">￥<b>{{ shop.P_MarketPrice }}</b></span>
-                  <!-- <cart-btn :itemIndex="i" :goodsList="item.dataList"></cart-btn> -->
+                  <cart-btn :itemIndex="i" :goodsList="item.dataList"></cart-btn>
                 </div>
               </div>
             </div>
@@ -75,7 +75,7 @@ import CartBtn from '../../components/cartBtn'
 export default {
   data() {
     return {
-      host: "http://guren.host30.voosite.com",
+      host: this.$host,
       swiperArr: [],
       indicatorDots: true,
       autoplay: false,

@@ -35,7 +35,7 @@
         </van-cell>
       </van-cell-group>
       <van-cell-group custom-class="cell-group" :border="false">
-        <van-cell title="客服聊天" icon="service-o" is-link><van-button type="default" size="mini" custom-class="customBtn" open-type="contact"></van-button></van-cell>
+        <van-cell title="客服聊天" icon="service-o" value-class="valueStyle"><button class="customBtn" open-type="contact" :plain="true"><van-icon name="arrow" custom-class="arrowBtn"/></button></van-cell>
         <van-cell title="购物车" icon="shopping-cart-o" is-link url="/pages/shoppingCart/main" link-type="switchTab"/>
         <van-cell title="收货地址" icon="location-o" is-link/>
       </van-cell-group>
@@ -51,6 +51,7 @@
 export default {
   data() {
     return {
+      host: this.$host
     }
   },
   methods: {
@@ -151,12 +152,31 @@ export default {
   font-weight: 700;
 }
 .value-style{
-  font-size: 20rpx;
+  position: relative;
 }
 .customBtn{
+  position: absolute;
+  right: 30rpx;
+  width: 32rpx;
+  height: 48rpx;
   border:none !important;
-  background: transparent !important;
-  background-color: transparent !important;
+  background: transparen;
+  background-color: transparent;
+  -webkit-tap-highlight-color:transparent;
+  padding-left: 0;
+  padding-right: 0;
+  outline: none;
+  border-color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+button:after {
+  border: none;
+}
+.arrowBtn{
+  font-size: 30rpx !important;
+  color: #999;
 }
 </style>
 
