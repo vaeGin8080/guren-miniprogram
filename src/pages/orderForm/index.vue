@@ -1,22 +1,21 @@
 <template>
   <div class="orderForm">
-    <van-tabs :active="active" @change="onChange" sticky custom-class="tabs" :color="tabColor">
-      <van-tab title="全部订单" tab-class="tab">
-        <div class="content">
-          没有更多内容了！
-        </div>
-      </van-tab>
-      <van-tab title="未完成">
-        <div class="content">
-          没有更多内容了！
-        </div>
-      </van-tab>
-      <van-tab title="已完成">
-        <div class="content">
-          没有更多内容了！
-        </div>
-      </van-tab>
+    <van-tabs :active="active" @change="onChange" sticky custom-class="tabs" :color="tabColor" swipe-threshold="5">
+      <van-tab title="全部订单"></van-tab>
+      <van-tab title="待付款"></van-tab>
+      <van-tab title="待发货"></van-tab>
+      <van-tab title="待收货"></van-tab>
+      <van-tab title="已完成"></van-tab>
     </van-tabs>
+    <block v-if="orderList.length === 0">
+      <div class="no-content">
+        <img src="/static/images/order.png" mode="widthFix">
+        <p>您的购物车还空空如也呢~</p>
+      </div>
+    </block>
+    <block v-else>
+      123
+    </block>
   </div>
 </template>
 
@@ -25,7 +24,8 @@ export default {
   data() {
     return {
       active: 0,
-      tabColor: '#11998e'
+      tabColor: '#11998e',
+      orderList: []
     }
   },
   methods: {
@@ -35,8 +35,9 @@ export default {
       })
     }
   },
-  mounted() {
-
+  onLoad(option) {
+    let that = this
+    that.active = option.index
   },
   onReady() {
     wx.setNavigationBarTitle({
@@ -51,19 +52,32 @@ export default {
   width: 100%;
   height: 100%;
   flex: 1;
-  .tabs{
-    width: 100%;
-    height: 100%;
-    .tab{
-      width: 100%;
-    }
-  }
+  background-color: #f9f9f9;
+  position: relative;
 }
 .content{
   width: 100%;
   padding: 20rpx 30rpx;;
   text-align: center;
   box-sizing: border-box;
+}
+.no-content{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  position: absolute;
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  img{
+    width: 160rpx;
+  }
+  p{
+    margin-top: 30rpx;
+    font-size: 24rpx;
+    color: #999;
+  }
 }
 </style>
 

@@ -1,33 +1,43 @@
 <template>
   <div class="shopping-cart">
-    <scroll-view class="scroll-view" :scroll-y="true" :style="{ height: scrollViewHeight + 'rpx;' }" enable-back-to-top="true">
-      <div v-for="(item, itemIndex) in cartList" :key="itemIndex">
-        <van-swipe-cell :right-width="80">
-          <van-cell>
-            <div class="item">
-              <van-checkbox :value="item.selected" checked-color="#11998e" @change="changeOne" :data-pid="item.pid" custom-class="checkOneBtn"></van-checkbox>
-              <div class="shop-item">
-                <img :src="host + item.image" mode="widthFix">
-                <div class="shop-info">
-                  <p class="title">{{ item.title }}</p>
-                  <p class="desc">规格：<span>{{ item.desc }}</span></p>
-                  <div>
-                    <span class="price">￥<b>{{ item.price }}</b></span>
-                    <span class="cartBtn">
-                      <van-stepper :value="item.count" @change="changeCount" :data-pid="item.pid"/>
-                    </span>
+    <div class="container">
+      <block v-if="cartList.length === 0">
+        <div class="no-content">
+          <img src="/static/images/shopcart.png" mode="widthFix">
+          <p>您的购物车还空空如也呢~</p>
+        </div>
+      </block>
+      <block v-else>
+        <scroll-view class="scroll-view" :scroll-y="true" :style="{ height: scrollViewHeight + 'rpx;' }" enable-back-to-top="true">
+          <div v-for="(item, itemIndex) in cartList" :key="itemIndex">
+            <van-swipe-cell :right-width="80">
+              <van-cell>
+                <div class="item">
+                  <van-checkbox :value="item.selected" checked-color="#11998e" @change="changeOne" :data-pid="item.pid" custom-class="checkOneBtn"></van-checkbox>
+                  <div class="shop-item">
+                    <img :src="host + item.image" mode="widthFix">
+                    <div class="shop-info">
+                      <p class="title">{{ item.title }}</p>
+                      <p class="desc">规格：<span>{{ item.desc }}</span></p>
+                      <div>
+                        <span class="price">￥<b>{{ item.price }}</b></span>
+                        <span class="cartBtn">
+                          <van-stepper :value="item.count" @change="changeCount" :data-pid="item.pid"/>
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          </van-cell>
-          <view slot="right" class="rightbtn">
-            <div class="right-del" @click="delet" :data-pid="item.pid">删除</div>
-          </view>
-        </van-swipe-cell>
-      </div>
-      <div class="bottom-line">我购物车也是有底线的~</div>
-    </scroll-view>
+              </van-cell>
+              <view slot="right" class="rightbtn">
+                <div class="right-del" @click="delet" :data-pid="item.pid">删除</div>
+              </view>
+            </van-swipe-cell>
+          </div>
+          <div class="bottom-line">我购物车也是有底线的~</div>
+        </scroll-view>
+      </block>
+    </div>
     <van-submit-bar
       :price="totalMoney"
       button-text="结算"
@@ -110,6 +120,13 @@ export default {
 </script>
 
 <style lang="scss">
+.shopping-cart{
+  width: 100%;
+  height: 100%;
+  background-color: #f9f9f9;
+  flex: 1;
+  position: relative;
+}
 .checkBtn{
   margin-left: 30rpx;
 }
@@ -179,6 +196,24 @@ export default {
   background-color: #f44;
   color: #fff;
   font-size: 28rpx;
+}
+.no-content{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  position: absolute;
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  img{
+    width: 160rpx;
+  }
+  p{
+    margin-top: 30rpx;
+    font-size: 24rpx;
+    color: #999;
+  }
 }
 </style>
 

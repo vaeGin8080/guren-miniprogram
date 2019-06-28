@@ -1,10 +1,18 @@
 <template>
   <div class="personal">
     <div class="top">
-      <div class="avatar">
-        <img src="/static/images/user.png" mode="widthFix">
-      </div>
-      <p class="username">叶寒</p>
+      <block v-if="isLogin">
+        <div class="avatar">
+          <open-data type="userAvatarUrl"></open-data>
+        </div>
+        <p class="username"><open-data type="userNickName"></open-data></p>
+      </block>
+      <block v-else>
+        <div class="avatar">
+          <img src="/static/images/user.png" mode="widthFix">
+        </div>
+        <van-button custom-class="loginBtn" size="small" :plain="true" :hairline="false" open-type="getUserInfo" @getuserinfo="getUserInfo">点击登录</van-button>
+      </block>
       <div class="beMember">
         <span>古仁农场</span>
         <span>成为会员 <i class="fa fa-angle-right"></i></span>
@@ -12,22 +20,22 @@
     </div>
     <div class="content">
       <van-cell-group custom-class="cell-group" :border="false">
-        <van-cell title="我的订单" value="查看全部订单" is-link title-class="title-style" value-class="value-style" url="/pages/orderForm/main" link-type="switchTab"/>
+        <van-cell title="我的订单" value="查看全部订单" is-link title-class="title-style" value-class="value-style" url="/pages/orderForm/main?index=0"/>
         <van-cell :border="false" >
           <div class="box">
-            <div>
+            <div @click="pageTo" data-index="1">
               <img src="/static/images/icon-dfk.png">
               <p>待付款</p>
             </div>
-            <div>
+            <div @click="pageTo" data-index="2">
               <img src="/static/images/icon-dfh.png">
               <p>待发货</p>
             </div>
-            <div>
+            <div @click="pageTo" data-index="3">
               <img src="/static/images/icon-dsh.png">
               <p>待收货</p>
             </div>
-            <div>
+            <div @click="pageTo" data-index="4">
               <img src="/static/images/icon-ywc.png">
               <p>已完成</p>
             </div>
@@ -37,26 +45,133 @@
       <van-cell-group custom-class="cell-group" :border="false">
         <van-cell title="客服聊天" icon="service-o" value-class="valueStyle"><button class="customBtn" open-type="contact" :plain="true"><van-icon name="arrow" custom-class="arrowBtn"/></button></van-cell>
         <van-cell title="购物车" icon="shopping-cart-o" is-link url="/pages/shoppingCart/main" link-type="switchTab"/>
-        <van-cell title="收货地址" icon="location-o" is-link/>
+        <van-cell title="收货地址" icon="location-o" is-link url="/pages/address/main"/>
       </van-cell-group>
       <van-cell-group custom-class="cell-group" :border="false">
         <van-cell title="个人中心" icon="manager-o" is-link/>
         <van-cell title="账号设置" icon="setting-o" is-link/>
       </van-cell-group>
     </div>
+    <van-popup :show="showLoginBox" @close="closeLoginBox" custom-class="loginPop">
+      <div class="login-box">
+        <img src="/static/images/logo.jpg">
+        <p>北京古仁原生态种植专业合作社</p>
+        <div>
+          <van-field :value="phoneNum" placeholder="请输入手机号" bind:change="onChange" @blur="inputPhoneNum"/>
+          <van-field :value="smsCode" center clearable placeholder="请输入短信验证码" :border="false" use-button-slot @blur="inputSmsCode">
+            <van-button slot="button" size="small" type="primary" custom-class="getSmsBtn" @click="getSms" :disabled="isSend">{{ isSend ? second : '发送验证码' }}</van-button>
+          </van-field>
+          <van-button type="default" size="large" custom-class="login" @click="login">登录</van-button>
+        </div>
+      </div>
+    </van-popup>
+    <van-toast id="van-toast"/>
   </div>
 </template>
 
 <script>
+import Toast from '../../../static/vant/toast/toast'
 export default {
   data() {
     return {
-      host: this.$host
+      host: this.$host,
+      isLogin: false,
+      showLoginBox: false,
+      phoneNum: '',
+      smsCode: '',
+      isSend: false,
+      second: 60,
+      openid: ''
     }
   },
   methods: {
-    contact() {
-
+    getUserInfo(e) {
+      let that = this
+      if (e.target.iv) {
+        that.showLoginBox = true
+        wx.cloud.callFunction({ name: 'getOpenid' })
+        .then(res => {
+          that.openid = res.result.openid
+        })
+      } 
+    },
+    closeLoginBox(e) {
+      let that = this
+      that.showLoginBox = false
+    },
+    getSms() {
+      let that = this
+      let reg = /^1([38][0-9]|4[579]|5[0-3,5-9]|6[6]|7[0135678]|9[89])\d{8}$/g
+      if(that.isSend) return
+      if (that.phoneNum.match(reg)){
+        let sendData = {
+          Title: "登录",
+          Mobile: that.phoneNum,
+          TempId: 442315
+        }
+        that.$fly.get("/GetSendCheckCode.asp", sendData)
+        .then(res => {
+          that.isSend = true
+          that.countdown()
+        })
+      } else {
+        Toast('请输入正确的手机号')
+      }
+      
+    },
+    inputPhoneNum(e) {
+      let that = this
+      that.phoneNum = e.mp.detail.value
+    },
+    inputSmsCode(e) {
+      let that = this
+      console.log(e)
+      that.smsCode = e.mp.detail.value
+    },
+    login() {
+      let that = this
+      let sendData = {
+        action: "GetOpenidLogin",
+        WXOpenid2: that.openid
+      }
+      that.$fly.get("/GetUserLogin.asp", sendData)
+      .then(res => {
+        let send = {
+          action: "GetOpenidLogin",
+          WXOpenid2: that.openid,
+          Name: '',
+          Photo: that.phoneNum
+        }
+        that.$fly.get("/GetUserRegister.asp", send)
+        .then(res2 => {
+          console.log(res2)
+        })
+      })
+    },
+    countdown() {
+      let that = this
+      let timer = null
+      if (that.second > 0) {
+        timer = setInterval(() => {
+          that.second --
+        }, 1000)
+      } else {
+        that.isSend = false
+        that.second = 60
+        clearInterval(timer)
+      }
+    },
+    pageTo(e) {
+      wx.navigateTo({
+        url: "/pages/orderForm/main?index=" + e.mp.currentTarget.dataset.index
+      })
+    }
+  },
+  watch: {
+    second(newVal, oldVal) {
+      if (newVal === 0) {
+        this.countdown()
+      }
     }
   },
   mounted() {
@@ -177,6 +292,48 @@ button:after {
 .arrowBtn{
   font-size: 30rpx !important;
   color: #999;
+}
+.loginBtn{
+  background-color: transparent !important;
+  border: none !important;
+  top: 180rpx;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.loginPop{
+  width: 80%;
+  height: 55%;
+  border-radius: 10rpx;
+  box-sizing: border-box;
+  padding: 30rpx;
+}
+.login-box{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+  align-items: center;
+  img{
+    width: 160rpx;
+    height: 160rpx;
+    border-radius: 50%;
+    overflow: hidden;
+  }
+  p{
+    font-size: 28rpx;
+    font-weight: 700;
+    color: #333;
+  }
+}
+.login{
+  margin-top: 30rpx;
+  background-color: #11998e !important;
+  color: #fff !important;
+  border-radius: 10rpx !important;
+}
+.getSmsBtn{
+  width: 160rpx !important;
 }
 </style>
 

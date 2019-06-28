@@ -26,14 +26,14 @@
                 <p class="desc">规格：<span>{{ shop.OVF_Field1 }}</span></p>
                 <div>
                   <span class="price">￥<b>{{ shop.P_MarketPrice }}</b></span>
-                  <cart-btn :itemIndex="i" :goodsList="item.dataList"></cart-btn>
+                  <!-- <cart-btn :itemIndex="i" :goodsList="item.dataList"></cart-btn> -->
                 </div>
               </div>
             </div>
           </div>
         </scroll-view>
       </div>
-      <van-toast id="van-toast" />
+      <van-toast id="van-toast"/>
       <van-popup :show="showPopup" @close="closePop" custom-class="pop-style">
         <block v-if="showPopup">
           <div class="pop-container">
@@ -121,7 +121,7 @@ export default {
       let that = this
       let arr = []
       Toast.loading({
-        mask: true,
+        mask: false,
         message: '加载中...',
         duration: 800
       });

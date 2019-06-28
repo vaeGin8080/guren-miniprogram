@@ -7,12 +7,14 @@
     "pages/personal/main",
     "pages/contactUs/main",
     "pages/buyCard/main",
-    "pages/noMembers/main"
+    "pages/noMembers/main",
+    "pages/address/main",
+    "pages/addressDetail/main"
   ],
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#fff",
-    "navigationBarTitleText": "古仁农场",
+    "navigationBarTitleText": "",
     "navigationBarTextStyle": "black"
   },
   "tabBar": {
@@ -31,11 +33,6 @@
       "pagePath": "pages/membersArea/main",
       "iconPath": "static/tabs/member.png",
       "selectedIconPath": "static/tabs/member-a.png"
-    }, {
-      "text": "订单",
-      "pagePath": "pages/orderForm/main",
-      "iconPath": "static/tabs/order.png",
-      "selectedIconPath": "static/tabs/order-a.png"
     }, {
       "text": "购物车",
       "pagePath": "pages/shoppingCart/main",
