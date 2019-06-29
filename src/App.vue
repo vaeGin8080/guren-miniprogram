@@ -1,12 +1,25 @@
 <script>
 export default {
   created () {
-
+  },
+  watch: {
+    '$store.getters.getTotalCount': function() {
+      if(this.$store.getters.getTotalCount > 0) {
+        wx.setTabBarBadge({
+          index: 2,
+          text: this.$store.getters.getTotalCount.toString()
+        })
+      } else {
+        wx.removeTabBarBadge({
+          index: 2
+        })
+      }
+    },
   }
 }
 </script>
 
-<style>
+<style lang="scss">
 page{
   min-height: 100%;
   display: flex;
@@ -25,5 +38,23 @@ input{
 outline:none;
 border:none;
 list-style: none;
+}
+.no-content{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  position: absolute;
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  img{
+    width: 160rpx;
+  }
+  p{
+    margin-top: 30rpx;
+    font-size: 24rpx;
+    color: #999;
+  }
 }
 </style>

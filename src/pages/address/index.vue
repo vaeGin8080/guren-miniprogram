@@ -1,19 +1,18 @@
 <template>
   <div class="address">
-    <van-cell-group>
-      <van-cell title="叶寒，18888888888" label="收货地址：北京市丰台区大成路北京市丰台区大成路北京市丰台区大成路" title-class="title-style" label-class="label-style" @click="editAddress">
-        <van-icon slot="right-icon" name="edit" custom-class="icon-style"/>
-      </van-cell>
-      <van-cell title="叶寒，18888888888" label="收货地址：北京市丰台区大成路北京市丰台区大成路北京市丰台区大成路" title-class="title-style" label-class="label-style" @click="editAddress">
-        <van-icon slot="right-icon" name="edit" custom-class="icon-style"/>
-      </van-cell>
-      <van-cell title="叶寒，18888888888" label="收货地址：北京市丰台区大成路北京市丰台区大成路北京市丰台区大成路" title-class="title-style" label-class="label-style" @click="editAddress">
-        <van-icon slot="right-icon" name="edit" custom-class="icon-style"/>
-      </van-cell>
-      <van-cell title="叶寒，18888888888" label="收货地址：北京市丰台区大成路北京市丰台区大成路北京市丰台区大成路" title-class="title-style" label-class="label-style" @click="editAddress">
-        <van-icon slot="right-icon" name="edit" custom-class="icon-style"/>
-      </van-cell>
-    </van-cell-group>
+    <block v-if="addressList.length === 0">
+      <div class="no-content">
+        <img src="/static/images/shdz.png" mode="widthFix">
+        <p>您还没有收获地址呢~</p>
+      </div>
+    </block>
+    <block v-else>
+      <van-cell-group>
+        <van-cell v-for="(item, i) in addressList" :key="i" :title="item.UA_Name + '，' + item.UA_Mobile" :label="'收货地址：' + item.UA_Province + item.UA_City + item.UA_Area + item.UA_Address" :data-id="item.ID" :data-uid="item.UA_ID" title-class="title-style" label-class="label-style" @click="editAddress(item)">
+          <van-icon slot="right-icon" name="edit" custom-class="icon-style"/>
+        </van-cell>
+      </van-cell-group>
+    </block>
     <van-button type="primary" size="large" custom-class="addAddress" :hairline="false" @click="addAddress">新增地址</van-button>
   </div>
 </template>
@@ -27,18 +26,33 @@ export default {
     }
   },
   methods: {
-    editAddress() {
+    editAddress(item) {
       wx.navigateTo({
-        url: '/pages/addressDetail/main?type=1'
+        url: '/pages/addressDetail/main?type=1&obj=' + JSON.stringify(item)
       })
     },
     addAddress() {
       wx.navigateTo({
         url: '/pages/addressDetail/main?type=2'
       })
+    },
+    getAddressList() {
+      let that = this
+      let sendData = {
+        action: 'GetList',
+        UserToken: that.$store.getters.getUser.token
+      }
+      that.$fly.get("/GetUserAddress.asp", sendData)
+      .then(res => {
+        if (res.code === 200) {
+          that.addressList = res.rows
+        }
+      })
     }
   },
-  mounted() {
+  onShow() {
+    let that = this
+    that.getAddressList()
   },
   onReady() {
     wx.setNavigationBarTitle({

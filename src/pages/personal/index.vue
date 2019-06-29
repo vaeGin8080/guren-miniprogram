@@ -75,24 +75,27 @@ export default {
   data() {
     return {
       host: this.$host,
-      isLogin: false,
+      isLogin: this.$store.getters.getUser.usercode ? true : false,
       showLoginBox: false,
       phoneNum: '',
       smsCode: '',
       isSend: false,
       second: 60,
-      openid: ''
+      openid: '',
+      userinfo: null
     }
   },
   methods: {
     getUserInfo(e) {
       let that = this
       if (e.target.iv) {
+        that.userinfo = e.mp.detail.userInfo
         that.showLoginBox = true
         wx.cloud.callFunction({ name: 'getOpenid' })
         .then(res => {
           that.openid = res.result.openid
         })
+        
       } 
     },
     closeLoginBox(e) {
@@ -107,7 +110,7 @@ export default {
         let sendData = {
           Title: "登录",
           Mobile: that.phoneNum,
-          TempId: 442315
+          TempId: 442312
         }
         that.$fly.get("/GetSendCheckCode.asp", sendData)
         .then(res => {
@@ -125,7 +128,6 @@ export default {
     },
     inputSmsCode(e) {
       let that = this
-      console.log(e)
       that.smsCode = e.mp.detail.value
     },
     login() {
@@ -137,14 +139,25 @@ export default {
       that.$fly.get("/GetUserLogin.asp", sendData)
       .then(res => {
         let send = {
-          action: "GetOpenidLogin",
+          action: "GetOpenidRegister",
           WXOpenid2: that.openid,
-          Name: '',
-          Photo: that.phoneNum
+          Mobile: that.phoneNum,
+          CheckMobileCode: that.smsCode
         }
         that.$fly.get("/GetUserRegister.asp", send)
         .then(res2 => {
-          console.log(res2)
+          if (res2.code === 200) {
+            let user = {
+              usercode: res2.usercode,
+              token: res2.token
+            }
+            Object.assign(user, that.userinfo)
+            that.$store.commit("setUser", user)
+            that.showLoginBox = false
+            that.isLogin = true
+          } else {
+            Toast('登录失败')
+          }
         })
       })
     },
@@ -173,8 +186,6 @@ export default {
         this.countdown()
       }
     }
-  },
-  mounted() {
   },
   onReady() {
     wx.setNavigationBarTitle({

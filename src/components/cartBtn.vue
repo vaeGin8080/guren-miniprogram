@@ -1,42 +1,42 @@
 <template>
-    <span class="cartBtn">
-        <block v-if="goodsList[itemIndex].selectNum && goodsList[itemIndex].selectNum > 0">
-            <div @click="decrFromCart(itemIndex, goodsList)" class="decrBtn">-</div>
-            <b>{{ goodsList[itemIndex].selectNum }}</b>
-        </block>
-        <div @click="addToCart(itemIndex, goodsList)" class="addBtn">+</div>
-    </span>
+  <span class="cartBtn">
+    <block v-if="goodsList[itemIndex].selectNum && goodsList[itemIndex].selectNum > 0">
+      <div @click="decrFromCart(itemIndex, goodsList)" class="decrBtn">-</div>
+      <b>{{ goodsList[itemIndex].selectNum }}</b>
+    </block>
+    <div @click="addToCart(itemIndex, goodsList)" class="addBtn">+</div>
+  </span>
 </template>
 
 <script>
 import Toast from '../../static/vant/toast/toast'
 export default {
-    methods: {
-        addToCart(itemIndex, goodsList) {
-            if (goodsList[itemIndex].selectNum ===2) {
-                Toast('每样商品最多只能选择两件！');
-            } else {
-                goodsList[itemIndex].selectNum ++
-                let goodsInfo = {
-                    pid: goodsList[itemIndex].P_ID,
-                    count: goodsList[itemIndex].selectNum,
-                    price: goodsList[itemIndex].P_MarketPrice,
-                    title: goodsList[itemIndex].P_Title,
-                    image: goodsList[itemIndex].P_LImage,
-                    desc: goodsList[itemIndex].OVF_Field1,
-                    selected: true
-                }
-                this.$store.commit("addToCart", goodsInfo)
-            }
-        },
-        decrFromCart(itemIndex, goodsList) {
-            if (goodsList[itemIndex].selectNum > 0) {
-                this.$store.commit("decrFromCart", goodsList[itemIndex].P_ID)
-                this.goodsList[itemIndex].selectNum --
-            }
-        },
+  methods: {
+    addToCart(itemIndex, goodsList) {
+      if (goodsList[itemIndex].selectNum ===2) {
+        Toast('每样商品最多只能选择两件！');
+      } else {
+        goodsList[itemIndex].selectNum ++
+        let goodsInfo = {
+          pid: goodsList[itemIndex].P_ID,
+          count: goodsList[itemIndex].selectNum,
+          price: goodsList[itemIndex].P_MarketPrice,
+          title: goodsList[itemIndex].P_Title,
+          image: goodsList[itemIndex].P_LImage,
+          desc: goodsList[itemIndex].OVF_Field1,
+          selected: true
+        }
+        this.$store.commit("addToCart", goodsInfo)
+      }
     },
-    props: ["itemIndex", "goodsList"]
+    decrFromCart(itemIndex, goodsList) {
+      if (goodsList[itemIndex].selectNum > 0) {
+        this.$store.commit("decrFromCart", goodsList[itemIndex].P_ID)
+        this.goodsList[itemIndex].selectNum --
+      }
+    },
+  },
+  props: ["itemIndex", "goodsList"]
 }
 </script>
 

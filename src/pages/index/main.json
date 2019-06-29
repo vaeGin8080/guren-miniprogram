@@ -2,6 +2,8 @@
   "usingComponents": {
     "van-cell-group": "/static/vant/cell-group/index",
     "van-cell": "/static/vant/cell/index",
-    "van-icon": "/static/vant/icon/index"
+    "van-icon": "/static/vant/icon/index",
+    "van-notice-bar": "/static/vant/notice-bar/index",
+    "van-search": "/static/vant/search/index"
   }
 }

@@ -93,7 +93,6 @@ export default {
     },
     delet(e) {
       let that = this
-      console.log(e.target.dataset.pid)
       that.$store.commit("deletShop", e.target.dataset.pid)
       that.getCartList()
       that.getTotalPrice()
@@ -196,24 +195,6 @@ export default {
   background-color: #f44;
   color: #fff;
   font-size: 28rpx;
-}
-.no-content{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  position: absolute;
-  top: 35%;
-  left: 50%;
-  transform: translate(-50%,-50%);
-  img{
-    width: 160rpx;
-  }
-  p{
-    margin-top: 30rpx;
-    font-size: 24rpx;
-    color: #999;
-  }
 }
 </style>
 

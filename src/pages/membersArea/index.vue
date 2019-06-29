@@ -18,7 +18,7 @@
           <div class="block" v-for="(item, index) in shopList" :key="index" :id="'item' + index">
             <div :id="'item' + item.id" class="tit"><span class="name">{{ item.name }}</span><span class="block-line"></span></div>
             <div class="shop-item" v-for="(shop, i) in item.dataList" :key="i" >
-              <div class="shop-img" @click="showDetail(shop, item.dataList, i)">
+              <div class="shop-img" @click="showDetail(shop.P_ID, item.dataList, i)">
                 <img :src="host + shop.P_LImage" mode="widthFix">
               </div>
               <div class="shop-info">
@@ -50,7 +50,7 @@
                 <p class="tit">商品简介</p>
                 <p>{{ shopDetail.P_Brief }}</p>
                 <p class="tit">商品描述</p>
-                <p>该产品供应周期为10--3月，请至少提前一周与客服进行预定该产品供应周期为10--3月，请至少提前一周与客服进行预定该产品供应周期为10--3月，请至少提前一周与客服进行预定该产品供应周期为10--3月，请至少提前一周与客服进行预定</p>
+                <p><wxParse :content="shopDetail.OVD_Description0" @preview="preview" @navigate="navigate" :imageProp="imgObj"></wxParse></p>
               </scroll-view>
             </div>
             <div class="shop-bottom">
@@ -72,6 +72,7 @@
 <script>
 import Toast from '../../../static/vant/toast/toast'
 import CartBtn from '../../components/cartBtn'
+import wxParse from 'mpvue-wxparse'
 export default {
   data() {
     return {
@@ -91,7 +92,13 @@ export default {
       popScrollHeight: '',
       shopDetail: null,
       detailList: '',
-      detailIndex: null
+      detailIndex: null,
+      imgObj: {
+        mode: "aspectFill",
+        padding: 0,
+        lazyLoad: true,
+        domain: "www.51yst.cn"
+      }
     }
   },
   methods: {
@@ -188,12 +195,24 @@ export default {
         }
       })
     },
-    showDetail(shop, detailList, i) {
+    showDetail(pid, detailList, i) {
       let that = this
-      that.showPopup = true
-      that.shopDetail = shop
-      that.detailList = detailList
-      that.detailIndex = i
+      let sendData = {
+        Action: "GetShow",
+        P_ID: pid,
+        DisplyObj: "field,picture,CartQuantity,detail"
+      }
+      that.$fly.get("/GetSearchProduct.asp", sendData)
+      .then(res => {
+        if (res.code === 200) {
+          that.shopDetail = res
+          that.showPopup = true
+          that.detailList = detailList
+          that.detailIndex = i
+        } else {
+          return
+        }
+      })
     },
     closePop() {
       let that = this
@@ -217,12 +236,14 @@ export default {
     })
   },
   components: {
-    "cart-btn": CartBtn
+    "cart-btn": CartBtn,
+    "wxParse": wxParse
   }
 }
 </script>
 
 <style lang="scss">
+@import url("~mpvue-wxparse/src/wxParse.css");
 .memberArea{
   flex: 1;
   display: flex;

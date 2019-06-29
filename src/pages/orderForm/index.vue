@@ -39,6 +39,9 @@ export default {
     let that = this
     that.active = option.index
   },
+  onShow() {
+
+  },
   onReady() {
     wx.setNavigationBarTitle({
       title: '全部订单'
@@ -60,24 +63,6 @@ export default {
   padding: 20rpx 30rpx;;
   text-align: center;
   box-sizing: border-box;
-}
-.no-content{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  position: absolute;
-  top: 35%;
-  left: 50%;
-  transform: translate(-50%,-50%);
-  img{
-    width: 160rpx;
-  }
-  p{
-    margin-top: 30rpx;
-    font-size: 24rpx;
-    color: #999;
-  }
 }
 </style>
 

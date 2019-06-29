@@ -7,7 +7,7 @@
     </div>
     <div class="container">
       <div class="card" v-for="(item, index) in goodsList" :key="index">
-        <div class="imgbox"><img :src="host + item.P_LImage" mode="widthFix" @click="showDetail(item, goodsList, index)"></div>
+        <div class="imgbox"><img :src="host + item.P_LImage" mode="widthFix" @click="showDetail(item.P_ID, goodsList, index)"></div>
         <div class="infobox">
           <p class="title">{{ item.P_Name }}</p>
           <p class="desc">规格：<span>{{ item.OVF_Field1 }}</span></p>
@@ -55,6 +55,7 @@
 
 <script>
 import CartBtn from '../../components/cartBtn'
+import wxParse from 'mpvue-wxparse'
 export default {
   data() {
     return {
@@ -105,12 +106,24 @@ export default {
       that.currentCol = that.tabList[that.activeTab].cid
       that.getGoodsList(that.currentCol, 1, that.rows, false)
     },
-    showDetail(shop, detailList, i) {
+    showDetail(pid, detailList, i) {
       let that = this
-      that.showPopup = true
-      that.shopDetail = shop
-      that.detailList = detailList
-      that.detailIndex = i
+      let sendData = {
+        Action: "GetShow",
+        P_ID: pid,
+        DisplyObj: "field,picture,CartQuantity,detail"
+      }
+      that.$fly.get("/GetSearchProduct.asp", sendData)
+      .then(res => {
+        if (res.code === 200) {
+          that.shopDetail = res
+          that.showPopup = true
+          that.detailList = detailList
+          that.detailIndex = i
+        } else {
+          return
+        }
+      })
     },
     closePop() {
       let that = this
@@ -138,12 +151,14 @@ export default {
     that.getGoodsList(that.currentCol, that.page, that.rows, true)
   },
   components: {
-    "cart-btn": CartBtn
+    "cart-btn": CartBtn,
+    "wxParse": wxParse
   }
 }
 </script>
 
 <style lang="scss">
+@import url("~mpvue-wxparse/src/wxParse.css");
 .container{
   width: 100%;
   display: flex;
