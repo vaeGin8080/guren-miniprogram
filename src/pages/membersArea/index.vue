@@ -17,8 +17,8 @@
         <scroll-view class="scroll-view" :scroll-y="true" :style="{ height: scrollViewHeight + 'rpx' }" enable-back-to-top="true" :scroll-into-view="scrollTarget" :scroll-with-animation="true" @scroll="scroll">
           <div class="block" v-for="(item, index) in shopList" :key="index" :id="'item' + index">
             <div :id="'item' + item.id" class="tit"><span class="name">{{ item.name }}</span><span class="block-line"></span></div>
-            <div class="shop-item" v-for="(shop, i) in item.dataList" :key="i" >
-              <div class="shop-img" @click="showDetail(shop.P_ID, item.dataList, i)">
+            <div class="shop-item" v-for="(shop, i) in item.rows" :key="i" >
+              <div class="shop-img" @click="showDetail(shop.P_ID, item.rows, i)">
                 <img :src="host + shop.P_LImage" mode="widthFix">
               </div>
               <div class="shop-info">
@@ -26,7 +26,7 @@
                 <p class="desc">规格：<span>{{ shop.OVF_Field1 }}</span></p>
                 <div>
                   <span class="price">￥<b>{{ shop.P_MarketPrice }}</b></span>
-                  <!-- <cart-btn :itemIndex="i" :goodsList="item.dataList"></cart-btn> -->
+                  <!-- <cart-btn :itemIndex="i" :goodsList="item.rows"></cart-btn> -->
                 </div>
               </div>
             </div>
@@ -130,54 +130,69 @@ export default {
       Toast.loading({
         mask: false,
         message: '加载中...',
-        duration: 800
+        duration: 0
       });
-      that.leftMenu.map((item, i) => {
-        setTimeout(() => {
-          that.$fly.get("/GetSearchProduct.asp", { rows: 9999, column: item.C_ID, DisplyObj: 'field,CartQuantity' })
-          .then(res => {
-            let list = []
-            res.rows.map(obj => {
-              let shopObj = {}
-              shopObj.ID = obj.ID
-              shopObj.MyUserCode = obj.MyUserCode
-              shopObj.ObjID = obj.ObjID
-              shopObj.P_ID = obj.P_ID
-              shopObj.P_Code = obj.P_Code
-              shopObj.P_Name = obj.P_Name
-              shopObj.P_Title = obj.P_Title
-              shopObj.P_LImage = obj.P_LImage
-              shopObj.P_Brief = obj.P_Brief
-              shopObj.P_ColumnID = obj.P_ColumnID
-              shopObj.P_ColumnName = obj.P_ColumnName
-              shopObj.P_AllColumnID = obj.P_AllColumnID
-              shopObj.P_AllColumnName = obj.P_AllColumnName
-              shopObj.P_Link = obj.P_Link
-              shopObj.P_MarketPrice = obj.P_MarketPrice
-              shopObj.P_MemberPrice = obj.P_MemberPrice
-              shopObj.OVF_Field1 = obj.OVF_Field1
-              shopObj.OVF_Field2 = obj.OVF_Field2
-              shopObj.OVF_Field3 = obj.OVF_Field3
-              shopObj.P_CartQuantity = obj.P_CartQuantity
-              shopObj.P_StorageCount = obj.P_StorageCount
-              shopObj.P_Tag = obj.P_Tag
-              shopObj.P_Hits = obj.P_Hits
-              shopObj.P_Parent = obj.P_Parent
-              shopObj.P_AddDate = obj.P_AddDate
-              shopObj.P_EditDate = obj.P_EditDate
-              shopObj.selectNum = this.$store.getters.getCountByPid(obj.P_ID) ? this.$store.getters.getCountByPid(obj.P_ID) : 0
-              list.push(shopObj)
-            })
-            let o = {}
-            o.id = item.C_ID
-            o.index = i
-            o.name = item.C_Name
-            o.dataList = list
-            arr.push(o)
-          })
-        }, i*400)
+      let promiseArr = []
+      that.leftMenu.map(item => {
+        let req = that.$fly.get("/GetSearchProduct.asp", { rows: 9999, column: item.C_ID, DisplyObj: 'field,CartQuantity' })
+        promiseArr.push(req)
       })
-      that.shopList = arr
+      Promise.all(promiseArr)
+      .then(res => {
+        res.map((item, i) => {
+          item.id = that.leftMenu[i].C_ID
+          item.name = that.leftMenu[i].C_Name
+        })
+        that.shopList = res
+        Toast.clear()
+      })
+      // that.leftMenu.map((item, i) => {
+      //   setTimeout(() => {
+      //     that.$fly.get("/GetSearchProduct.asp", { rows: 9999, column: item.C_ID, DisplyObj: 'field,CartQuantity' })
+      //     .then(res => {
+      //       let list = []
+      //       res.rows.map(obj => {
+      //         let shopObj = {}
+      //         shopObj.ID = obj.ID
+      //         shopObj.MyUserCode = obj.MyUserCode
+      //         shopObj.ObjID = obj.ObjID
+      //         shopObj.P_ID = obj.P_ID
+      //         shopObj.P_Code = obj.P_Code
+      //         shopObj.P_Name = obj.P_Name
+      //         shopObj.P_Title = obj.P_Title
+      //         shopObj.P_LImage = obj.P_LImage
+      //         shopObj.P_Brief = obj.P_Brief
+      //         shopObj.P_ColumnID = obj.P_ColumnID
+      //         shopObj.P_ColumnName = obj.P_ColumnName
+      //         shopObj.P_AllColumnID = obj.P_AllColumnID
+      //         shopObj.P_AllColumnName = obj.P_AllColumnName
+      //         shopObj.P_Link = obj.P_Link
+      //         shopObj.P_MarketPrice = obj.P_MarketPrice
+      //         shopObj.P_MemberPrice = obj.P_MemberPrice
+      //         shopObj.OVF_Field1 = obj.OVF_Field1
+      //         shopObj.OVF_Field2 = obj.OVF_Field2
+      //         shopObj.OVF_Field3 = obj.OVF_Field3
+      //         shopObj.P_CartQuantity = obj.P_CartQuantity
+      //         shopObj.P_StorageCount = obj.P_StorageCount
+      //         shopObj.P_Tag = obj.P_Tag
+      //         shopObj.P_Hits = obj.P_Hits
+      //         shopObj.P_Parent = obj.P_Parent
+      //         shopObj.P_AddDate = obj.P_AddDate
+      //         shopObj.P_EditDate = obj.P_EditDate
+      //         shopObj.selectNum = this.$store.getters.getCountByPid(obj.P_ID) ? this.$store.getters.getCountByPid(obj.P_ID) : 0
+      //         list.push(shopObj)
+      //       })
+      //       let o = {}
+      //       o.id = item.C_ID
+      //       o.index = i
+      //       o.name = item.C_Name
+      //       o.dataList = list
+      //       arr.push(o)
+      //     })
+      //   }, i*400)
+      // })
+      // console.log(arr)
+      // that.shopList = arr
     },
     scroll(e) {
       let that = this
@@ -185,7 +200,7 @@ export default {
       let top = []
       let size = 0
       that.shopList.map(item => {
-        size += item.dataList.length * 80 + 40
+        size += item.rows.length * 80 + 40
         top.push(size)
       })
       top.unshift(0)
