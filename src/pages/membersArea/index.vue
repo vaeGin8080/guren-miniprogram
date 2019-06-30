@@ -26,7 +26,7 @@
                 <p class="desc">规格：<span>{{ shop.OVF_Field1 }}</span></p>
                 <div>
                   <span class="price">￥<b>{{ shop.P_MarketPrice }}</b></span>
-                  <!-- <cart-btn :itemIndex="i" :goodsList="item.rows"></cart-btn> -->
+                  <cart-btn :shopObj="putShop(shop)"></cart-btn>
                 </div>
               </div>
             </div>
@@ -59,7 +59,7 @@
                 <p>每项限购两份</p>
               </div>
               <div class="right">
-                <cart-btn :itemIndex="detailIndex" :goodsList="detailList"></cart-btn>
+                <cart-btn :shopObj="putShop(shopDetail)"></cart-btn>
               </div>
             </div>
           </div>
@@ -134,7 +134,7 @@ export default {
       });
       let promiseArr = []
       that.leftMenu.map(item => {
-        let req = that.$fly.get("/GetSearchProduct.asp", { rows: 9999, column: item.C_ID, DisplyObj: 'field,CartQuantity' })
+        let req = that.$fly.get("/GetSearchProduct.asp", { rows: 9999, column: item.C_ID, DisplyObj: 'field1,field2,field3,CartQuantity' })
         promiseArr.push(req)
       })
       Promise.all(promiseArr)
@@ -146,53 +146,6 @@ export default {
         that.shopList = res
         Toast.clear()
       })
-      // that.leftMenu.map((item, i) => {
-      //   setTimeout(() => {
-      //     that.$fly.get("/GetSearchProduct.asp", { rows: 9999, column: item.C_ID, DisplyObj: 'field,CartQuantity' })
-      //     .then(res => {
-      //       let list = []
-      //       res.rows.map(obj => {
-      //         let shopObj = {}
-      //         shopObj.ID = obj.ID
-      //         shopObj.MyUserCode = obj.MyUserCode
-      //         shopObj.ObjID = obj.ObjID
-      //         shopObj.P_ID = obj.P_ID
-      //         shopObj.P_Code = obj.P_Code
-      //         shopObj.P_Name = obj.P_Name
-      //         shopObj.P_Title = obj.P_Title
-      //         shopObj.P_LImage = obj.P_LImage
-      //         shopObj.P_Brief = obj.P_Brief
-      //         shopObj.P_ColumnID = obj.P_ColumnID
-      //         shopObj.P_ColumnName = obj.P_ColumnName
-      //         shopObj.P_AllColumnID = obj.P_AllColumnID
-      //         shopObj.P_AllColumnName = obj.P_AllColumnName
-      //         shopObj.P_Link = obj.P_Link
-      //         shopObj.P_MarketPrice = obj.P_MarketPrice
-      //         shopObj.P_MemberPrice = obj.P_MemberPrice
-      //         shopObj.OVF_Field1 = obj.OVF_Field1
-      //         shopObj.OVF_Field2 = obj.OVF_Field2
-      //         shopObj.OVF_Field3 = obj.OVF_Field3
-      //         shopObj.P_CartQuantity = obj.P_CartQuantity
-      //         shopObj.P_StorageCount = obj.P_StorageCount
-      //         shopObj.P_Tag = obj.P_Tag
-      //         shopObj.P_Hits = obj.P_Hits
-      //         shopObj.P_Parent = obj.P_Parent
-      //         shopObj.P_AddDate = obj.P_AddDate
-      //         shopObj.P_EditDate = obj.P_EditDate
-      //         shopObj.selectNum = this.$store.getters.getCountByPid(obj.P_ID) ? this.$store.getters.getCountByPid(obj.P_ID) : 0
-      //         list.push(shopObj)
-      //       })
-      //       let o = {}
-      //       o.id = item.C_ID
-      //       o.index = i
-      //       o.name = item.C_Name
-      //       o.dataList = list
-      //       arr.push(o)
-      //     })
-      //   }, i*400)
-      // })
-      // console.log(arr)
-      // that.shopList = arr
     },
     scroll(e) {
       let that = this
@@ -232,6 +185,11 @@ export default {
     closePop() {
       let that = this
       that.showPopup = false
+    },
+    putShop(obj) {
+      let that = this
+      obj.count = that.$store.getters.getCountByPid(obj.P_ID)
+      return obj
     }
   },
   onLoad() {

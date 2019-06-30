@@ -63,7 +63,7 @@ export default {
       let that = this
       if (that.addressId) {
         let sendData = {
-          UserToken: that.$store.getters.getUser.token,
+          UserToken: wx.getStorageSync('user').usercode,
           action: "GetEdit",
           UA_ID:that.addressId,
           Name:that.name,
@@ -71,7 +71,8 @@ export default {
           City:that.area.split('/')[1],
           Area:that.area.split('/')[2],
           Address:that.notes,
-          Mobile:that.phone
+          Mobile:that.phone,
+          back: false
         }
         that.$fly.get("/GetUserAddress.asp", sendData)
         .then(res => {
@@ -80,16 +81,29 @@ export default {
               message: '修改成功',
               duration: '1000'
             })
+            let address = {
+              name: that.name,
+              area: that.area,
+              phone: that.phone,
+              notes: that.notes
+            }
+            that.$store.commit("setUserAddress", address)
             setTimeout(() => {
-              wx.navigateBack({
-                delta: 1
-              })
+              if (that.back === 'true') {
+                wx.navigateBack({
+                  delta: 2
+                })
+              } else {
+                wx.navigateBack({
+                  delta: 1
+                })
+              }
             }, 1000)
           }
         })
       } else {
         let sendData = {
-          UserToken: that.$store.getters.getUser.token,
+          UserToken: wx.getStorageSync('user').usercode,
           action: "GetAdd",
           Name:that.name,
           Province:that.area.split('/')[0],
@@ -117,7 +131,7 @@ export default {
     deletAddress() {
       let that = this
       let sendData = {
-        UserToken: that.$store.getters.getUser.token,
+        UserToken: wx.getStorageSync('user').usercode,
         action: "GetDel",
         UA_ID:that.addressId,
       }
@@ -172,7 +186,7 @@ export default {
   },
   onLoad(option) {
     let that = this
-    console.log(option)
+    that.back = option.back
     that.type = option.type
     if (option.type === '1') {
       that.barTitle = "编辑地址"

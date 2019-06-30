@@ -20,7 +20,7 @@
     </div>
     <div class="content">
       <van-cell-group custom-class="cell-group" :border="false">
-        <van-cell title="我的订单" value="查看全部订单" is-link title-class="title-style" value-class="value-style" url="/pages/orderForm/main?index=0"/>
+        <van-cell title="我的订单" value="查看全部订单" is-link title-class="title-style" value-class="value-style" @click="pageTo" data-index="0"/>
         <van-cell :border="false" >
           <div class="box">
             <div @click="pageTo" data-index="1">
@@ -45,7 +45,7 @@
       <van-cell-group custom-class="cell-group" :border="false">
         <van-cell title="客服聊天" icon="service-o" value-class="valueStyle"><button class="customBtn" open-type="contact" :plain="true"><van-icon name="arrow" custom-class="arrowBtn"/></button></van-cell>
         <van-cell title="购物车" icon="shopping-cart-o" is-link url="/pages/shoppingCart/main" link-type="switchTab"/>
-        <van-cell title="收货地址" icon="location-o" is-link url="/pages/address/main"/>
+        <van-cell title="收货地址" icon="location-o" is-link @click="toAddress"/>
       </van-cell-group>
       <van-cell-group custom-class="cell-group" :border="false">
         <van-cell title="个人中心" icon="manager-o" is-link/>
@@ -95,7 +95,6 @@ export default {
         .then(res => {
           that.openid = res.result.openid
         })
-        
       } 
     },
     closeLoginBox(e) {
@@ -120,7 +119,16 @@ export default {
       } else {
         Toast('请输入正确的手机号')
       }
-      
+    },
+    toAddress() {
+      let that = this
+      if (wx.getStorageSync('user').usercode) {
+        wx.navigateTo({
+          url: '/pages/address/main'
+        })
+      } else {
+        Toast.fail('请先登录');
+      }  
     },
     inputPhoneNum(e) {
       let that = this
@@ -175,9 +183,14 @@ export default {
       }
     },
     pageTo(e) {
-      wx.navigateTo({
-        url: "/pages/orderForm/main?index=" + e.mp.currentTarget.dataset.index
-      })
+      if (wx.getStorageSync('user').usercode) {
+        wx.navigateTo({
+          url: "/pages/orderForm/main?index=" + e.mp.currentTarget.dataset.index
+        })
+      } else {
+        Toast.fail('请先登录');
+      }  
+      
     }
   },
   watch: {

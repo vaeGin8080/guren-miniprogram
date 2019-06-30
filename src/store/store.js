@@ -12,27 +12,34 @@ const store = new Vuex.Store({
     setUser(state, userObj) {
       wx.setStorageSync('user', userObj)
     },
+    // 保存收货地址
+    setUserAddress(state, address) {
+      state.user.address = address
+      wx.setStorageSync('user', state.user)
+    },
     // 添加商品到购物车
-    addToCart(state, goodsInfo) {
-      let flag = false
-      state.cart.map(item => {
-        if (item.pid === goodsInfo.pid) {
-          item.count ++
-          flag = true
-          return true
-        }
-      })
-      if (!flag) {
-        goodsInfo.count = 1
-        state.cart.push(goodsInfo)
+    addToCart(state, shopObj) {
+      console.log(shopObj.count)
+      if (shopObj.count && shopObj.count !== 0) {
+        console.log('er')
+        state.cart.map(item => {
+          if (item.P_ID === shopObj.P_ID) {
+            item.count ++
+            return true
+          }
+        })
+      } else {
+        console.log('yi')
+        shopObj.count = 1
+        state.cart.push(shopObj)
       }
       wx.setStorageSync('cart', state.cart)
     },
     // 通过 pid 删除或减少购物车商品
     decrFromCart(state, pid) {
       state.cart.map((item, i) => {
-        if (item.pid === pid) {
-          if(item.count !== 0){
+        if (item.P_ID === pid) {
+          if(item.count > 1){
             item.count --
           } else {
             state.cart.splice(i, 1)
@@ -45,7 +52,7 @@ const store = new Vuex.Store({
     // 根据 pid 改变购物车商品的数量
     updateShopCount(state, arr) {
       state.cart.map((item, i) => {
-        if (item.pid === arr[0]) {
+        if (item.P_ID === arr[0]) {
           if (arr[1] !== 0) {
             item.count = arr[1]
           } else {
@@ -59,7 +66,7 @@ const store = new Vuex.Store({
     // 更新单个商品在购物车的选择状态
     updateShopSelected(state, pid) {
       state.cart.map(item => {
-        if (item.pid === pid) {
+        if (item.P_ID === pid) {
           item.selected = !item.selected
           return true
         }
@@ -76,7 +83,7 @@ const store = new Vuex.Store({
     // 从购物车删除商品
     deletShop(state, pid) {
       state.cart.map((item, i) => {
-        if (item.pid === pid) {
+        if (item.P_ID === pid) {
           state.cart.splice(i, 1)
         }
         return true
@@ -89,12 +96,16 @@ const store = new Vuex.Store({
     getUser: (state) => {
       return state.user
     },
+    getAddress: (state) => {
+      return state.user.address
+    },
     // 根据 pid 获取购物车商品的数量
     getCountByPid: (state) => (pid) => {
       let count = 0
       state.cart.map(item => {
-        if (item.pid === pid) {
+        if (item.P_ID === pid) {
           count = item.count
+          return true
         }
       })
       return count
@@ -104,7 +115,7 @@ const store = new Vuex.Store({
       let totalPrice = 0
       state.cart.map(item => {
         if (item.selected) {
-          totalPrice += item.count * item.price
+          totalPrice += item.count * item.P_MarketPrice
         }
       })
       return totalPrice
@@ -118,6 +129,13 @@ const store = new Vuex.Store({
         }
       })
       return totalCount
+    },
+    getCount: (state) => {
+      let count = 0
+      state.cart.map(item => {
+        count += item.count
+      })
+      return count
     }
   }
 })

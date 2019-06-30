@@ -4,6 +4,8 @@
     "van-cell": "/static/vant/cell/index",
     "van-icon": "/static/vant/icon/index",
     "van-notice-bar": "/static/vant/notice-bar/index",
-    "van-search": "/static/vant/search/index"
+    "van-search": "/static/vant/search/index",
+    "van-toast": "/static/vant/toast/index",
+    "van-popup": "/static/vant/popup/index"
   }
 }

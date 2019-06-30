@@ -4,6 +4,7 @@
         "van-checkbox": "/static/vant/checkbox/index",
         "van-swipe-cell": "/static/vant/swipe-cell/index",
         "van-cell": "/static/vant/cell/index",
+        "van-toast": "/static/vant/toast/index",
         "van-cell-group": "/static/vant/cell-group/index",
         "van-stepper": "/static/vant/stepper/index"
       }

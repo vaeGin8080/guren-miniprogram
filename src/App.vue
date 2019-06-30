@@ -14,7 +14,7 @@ export default {
           index: 2
         })
       }
-    },
+    }
   }
 }
 </script>

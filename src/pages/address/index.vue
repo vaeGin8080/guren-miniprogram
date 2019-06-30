@@ -22,25 +22,26 @@ import Toast from '../../../static/vant/toast/toast'
 export default {
   data() {
     return {
-      addressList: []
+      addressList: [],
+      back: false
     }
   },
   methods: {
     editAddress(item) {
       wx.navigateTo({
-        url: '/pages/addressDetail/main?type=1&obj=' + JSON.stringify(item)
+        url: '/pages/addressDetail/main?back=' + this.back + '&type=1&obj=' + JSON.stringify(item)
       })
     },
     addAddress() {
       wx.navigateTo({
-        url: '/pages/addressDetail/main?type=2'
+        url: '/pages/addressDetail/main?back=' + this.back + '&type=2'
       })
     },
     getAddressList() {
       let that = this
       let sendData = {
         action: 'GetList',
-        UserToken: that.$store.getters.getUser.token
+        UserToken: wx.getStorageSync('user').token
       }
       that.$fly.get("/GetUserAddress.asp", sendData)
       .then(res => {
@@ -48,6 +49,12 @@ export default {
           that.addressList = res.rows
         }
       })
+    }
+  },
+  onLoad(option) {
+    let that = this
+    if (option.back) {
+      that.back = option.back
     }
   },
   onShow() {

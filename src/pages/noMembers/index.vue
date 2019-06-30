@@ -13,7 +13,7 @@
           <p class="desc">规格：<span>{{ item.OVF_Field1 }}</span></p>
           <div>
             <span class="price">￥<b>{{ item.P_MarketPrice }}</b></span>
-            <cart-btn :itemIndex="index" :goodsList="goodsList"></cart-btn>
+            <cart-btn :shopObj="putShop(item)"></cart-btn>
           </div>
         </div>
       </div>
@@ -44,7 +44,7 @@
                <p>每项限购两份</p>
              </div>
              <div class="right">
-               <cart-btn :itemIndex="detailIndex" :goodsList="detailList"></cart-btn>
+               <cart-btn :shopObj="putShop(shopDetail)"></cart-btn>
              </div>
            </div>
          </div>
@@ -92,7 +92,7 @@ export default {
     },
     getGoodsList(column, page, rows, flag) {
       let that = this
-      that.$fly.get("/GetSearchProduct.asp", { page: page, rows: rows, Column: column, DisplyObj: 'field,CartQuantity' })
+      that.$fly.get("/GetSearchProduct.asp", { page: page, rows: rows, Column: column, DisplyObj: 'field1,field2,field3,CartQuantity' })
       .then(res => {
         res.rows.map(item => {
           item.selectNum = this.$store.getters.getCountByPid(item.P_ID) ? this.$store.getters.getCountByPid(item.P_ID) : 0
@@ -105,13 +105,16 @@ export default {
       that.activeTab = e.mp.detail.index
       that.currentCol = that.tabList[that.activeTab].cid
       that.getGoodsList(that.currentCol, 1, that.rows, false)
+      wx.setNavigationBarTitle({
+        title: event.target.title
+      })
     },
     showDetail(pid, detailList, i) {
       let that = this
       let sendData = {
         Action: "GetShow",
         P_ID: pid,
-        DisplyObj: "field,picture,CartQuantity,detail"
+        DisplyObj: "field1,field2,field3,picture,CartQuantity,detail"
       }
       that.$fly.get("/GetSearchProduct.asp", sendData)
       .then(res => {
@@ -128,11 +131,18 @@ export default {
     closePop() {
       let that = this
       that.showPopup = false
+    },
+    putShop(obj) {
+      let that = this
+      obj.count = that.$store.getters.getCountByPid(obj.P_ID)
+      return obj
     }
   },
-  onLoad() {
+  onLoad(option) {
     let that = this
     that.getTabList()
+    console.log(option.index)
+    that.activeTab = option.index
   },
   onShow() {
     let that = this  

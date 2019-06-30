@@ -9,7 +9,8 @@
     "pages/buyCard/main",
     "pages/noMembers/main",
     "pages/address/main",
-    "pages/addressDetail/main"
+    "pages/addressDetail/main",
+    "pages/settleAccounts/main"
   ],
   "window": {
     "backgroundTextStyle": "light",

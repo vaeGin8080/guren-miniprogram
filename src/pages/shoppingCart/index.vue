@@ -13,16 +13,16 @@
             <van-swipe-cell :right-width="80">
               <van-cell>
                 <div class="item">
-                  <van-checkbox :value="item.selected" checked-color="#11998e" @change="changeOne" :data-pid="item.pid" custom-class="checkOneBtn"></van-checkbox>
+                  <van-checkbox :value="item.selected" checked-color="#11998e" @change="changeOne" :data-pid="item.P_ID" custom-class="checkOneBtn"></van-checkbox>
                   <div class="shop-item">
-                    <img :src="host + item.image" mode="widthFix">
+                    <img :src="host + item.P_LImage" mode="widthFix">
                     <div class="shop-info">
-                      <p class="title">{{ item.title }}</p>
-                      <p class="desc">规格：<span>{{ item.desc }}</span></p>
+                      <p class="title">{{ item.P_Name }}</p>
+                      <p class="desc">规格：<span>{{ item.OVF_Field1 }}</span></p>
                       <div>
-                        <span class="price">￥<b>{{ item.price }}</b></span>
+                        <span class="price">￥<b>{{ item.P_MarketPrice }}</b></span>
                         <span class="cartBtn">
-                          <van-stepper :value="item.count" @change="changeCount" :data-pid="item.pid"/>
+                          <van-stepper :value="item.count" @change="changeCount" :data-pid="item.P_ID"/>
                         </span>
                       </div>
                     </div>
@@ -30,7 +30,7 @@
                 </div>
               </van-cell>
               <view slot="right" class="rightbtn">
-                <div class="right-del" @click="delet" :data-pid="item.pid">删除</div>
+                <div class="right-del" @click="delet" :data-pid="item.P_ID">删除</div>
               </view>
             </van-swipe-cell>
           </div>
@@ -38,6 +38,7 @@
         </scroll-view>
       </block>
     </div>
+    <van-toast id="van-toast"/>
     <van-submit-bar
       :price="totalMoney"
       button-text="结算"
@@ -51,6 +52,7 @@
 </template>
 
 <script>
+import Toast from '../../../static/vant/toast/toast'
 export default {
   data() {
     return {
@@ -96,6 +98,16 @@ export default {
       that.$store.commit("deletShop", e.target.dataset.pid)
       that.getCartList()
       that.getTotalPrice()
+    },
+    onClickButton() {
+      let that = this
+      if (wx.getStorageSync('user').usercode) {
+        wx.navigateTo({
+          url: '/pages/settleAccounts/main'
+        })
+      } else {
+        Toast.fail('请先登录');
+      }  
     }
   },
   onLoad() {

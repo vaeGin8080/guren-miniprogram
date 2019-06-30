@@ -1,10 +1,10 @@
 <template>
   <span class="cartBtn">
-    <block v-if="goodsList[itemIndex].selectNum && goodsList[itemIndex].selectNum > 0">
-      <div @click="decrFromCart(itemIndex, goodsList)" class="decrBtn">-</div>
-      <b>{{ goodsList[itemIndex].selectNum }}</b>
+    <block v-if="shopObj.count > 0">
+      <div @click="decrFromCart" class="decrBtn">-</div>
+      <b>{{ shopObj.count }}</b>
     </block>
-    <div @click="addToCart(itemIndex, goodsList)" class="addBtn">+</div>
+    <div @click="addToCart" class="addBtn">+</div>
   </span>
 </template>
 
@@ -12,31 +12,22 @@
 import Toast from '../../static/vant/toast/toast'
 export default {
   methods: {
-    addToCart(itemIndex, goodsList) {
-      if (goodsList[itemIndex].selectNum ===2) {
+    addToCart() {
+      let that = this
+      if (this.selectNum >= 2) {
         Toast('每样商品最多只能选择两件！');
       } else {
-        goodsList[itemIndex].selectNum ++
-        let goodsInfo = {
-          pid: goodsList[itemIndex].P_ID,
-          count: goodsList[itemIndex].selectNum,
-          price: goodsList[itemIndex].P_MarketPrice,
-          title: goodsList[itemIndex].P_Title,
-          image: goodsList[itemIndex].P_LImage,
-          desc: goodsList[itemIndex].OVF_Field1,
-          selected: true
-        }
-        this.$store.commit("addToCart", goodsInfo)
+        that.shopObj.count = that.$store.getters.getCountByPid(that.shopObj.P_ID)
+        that.shopObj.selected = true
+        that.$store.commit("addToCart", that.shopObj)
       }
     },
-    decrFromCart(itemIndex, goodsList) {
-      if (goodsList[itemIndex].selectNum > 0) {
-        this.$store.commit("decrFromCart", goodsList[itemIndex].P_ID)
-        this.goodsList[itemIndex].selectNum --
-      }
-    },
+    decrFromCart() {
+      let that = this
+      that.$store.commit("decrFromCart", that.shopObj.P_ID)
+    }
   },
-  props: ["itemIndex", "goodsList"]
+  props: ["shopObj"]
 }
 </script>
 
