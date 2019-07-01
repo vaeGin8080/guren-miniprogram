@@ -46,5 +46,25 @@
       "selectedIconPath": "static/tabs/mine-a.png"
     }],
     "position": "bottom"
+  },
+  "usingComponents": {
+    "van-cell-group": "/static/vant/cell-group/index",
+    "van-cell": "/static/vant/cell/index",
+    "van-icon": "/static/vant/icon/index",
+    "van-notice-bar": "/static/vant/notice-bar/index",
+    "van-search": "/static/vant/search/index",
+    "van-picker": "/static/vant/picker/index",
+    "van-toast": "/static/vant/toast/index",
+    "van-field": "/static/vant/field/index",
+    "van-popup": "/static/vant/popup/index",
+    "van-button": "/static/vant/button/index",
+    "van-area": "/static/vant/area/index",
+    "van-tab": "/static/vant/tab/index",
+    "van-tabs": "/static/vant/tabs/index",
+    "van-card": "/static/vant/card/index",
+    "van-submit-bar": "/static/vant/submit-bar/index",
+    "van-checkbox": "/static/vant/checkbox/index",
+    "van-swipe-cell": "/static/vant/swipe-cell/index",
+    "van-stepper": "/static/vant/stepper/index"
   }
 }
