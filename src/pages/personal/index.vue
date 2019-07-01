@@ -15,7 +15,7 @@
       </block>
       <div class="beMember">
         <span>古仁农场</span>
-        <span>成为会员 <i class="fa fa-angle-right"></i></span>
+        <span>成为会员 <van-icon name="arrow"/></span>
       </div>
     </div>
     <div class="content">
@@ -122,7 +122,7 @@ export default {
     },
     toAddress() {
       let that = this
-      if (wx.getStorageSync('user').usercode) {
+      if (that.$store.getters.getUser.usercode) {
         wx.navigateTo({
           url: '/pages/address/main'
         })
@@ -183,7 +183,7 @@ export default {
       }
     },
     pageTo(e) {
-      if (wx.getStorageSync('user').usercode) {
+      if (this.$store.getters.getUser.usercode) {
         wx.navigateTo({
           url: "/pages/orderForm/main?index=" + e.mp.currentTarget.dataset.index
         })
@@ -256,6 +256,13 @@ export default {
       line-height: 80rpx;
       color: #fff;
       font-size: 28rpx;
+      span{
+        &:nth-child(1){
+          display: flex;
+          justify-content: flex-start;
+          align-items: center;
+        }
+      }
     }
   }
   .content{

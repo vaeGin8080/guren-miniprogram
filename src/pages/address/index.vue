@@ -41,7 +41,7 @@ export default {
       let that = this
       let sendData = {
         action: 'GetList',
-        UserToken: wx.getStorageSync('user').token
+        UserToken: that.$store.getters.getUser.token
       }
       that.$fly.get("/GetUserAddress.asp", sendData)
       .then(res => {

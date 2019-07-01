@@ -59,7 +59,7 @@ export default {
     let that = this
     if(that.$store.getters.getAddress) {
       that.isChooseAdd = true
-      that.address = that.$store.getters.getAddress
+      that.address = that.$store.getters.getAddress()
     } else {
       that.isChooseAdd = false
     }
@@ -67,6 +67,7 @@ export default {
   onShow() {
     let that = this
     that.getCartList()
+    that.getTotalPrice()
   },
   onReady() {
     wx.setNavigationBarTitle({
@@ -75,6 +76,7 @@ export default {
   },
   watch: {
     '$store.getters.getAddress': function() {
+      console.log('address change')
       if(this.$store.getters.getAddress) {
         this.isChooseAdd = true
         this.address = this.$store.getters.getAddress

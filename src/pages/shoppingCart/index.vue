@@ -101,7 +101,7 @@ export default {
     },
     onClickButton() {
       let that = this
-      if (wx.getStorageSync('user').usercode) {
+      if (that.$store.getters.getUser.usercode) {
         wx.navigateTo({
           url: '/pages/settleAccounts/main'
         })

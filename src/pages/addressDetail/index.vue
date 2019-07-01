@@ -63,7 +63,7 @@ export default {
       let that = this
       if (that.addressId) {
         let sendData = {
-          UserToken: wx.getStorageSync('user').usercode,
+          UserToken: that.$store.getters.getUser.token,
           action: "GetEdit",
           UA_ID:that.addressId,
           Name:that.name,
@@ -88,6 +88,7 @@ export default {
               notes: that.notes
             }
             that.$store.commit("setUserAddress", address)
+            console.log(that.$store.getters.getAddress)
             setTimeout(() => {
               if (that.back === 'true') {
                 wx.navigateBack({
@@ -103,7 +104,7 @@ export default {
         })
       } else {
         let sendData = {
-          UserToken: wx.getStorageSync('user').usercode,
+          UserToken: that.$store.getters.getUser.token,
           action: "GetAdd",
           Name:that.name,
           Province:that.area.split('/')[0],
@@ -131,7 +132,7 @@ export default {
     deletAddress() {
       let that = this
       let sendData = {
-        UserToken: wx.getStorageSync('user').usercode,
+        UserToken: that.$store.getters.getUser.token,
         action: "GetDel",
         UA_ID:that.addressId,
       }

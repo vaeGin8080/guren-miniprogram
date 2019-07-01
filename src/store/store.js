@@ -10,7 +10,8 @@ const store = new Vuex.Store({
   mutations: {
     // 保存用户登录信息
     setUser(state, userObj) {
-      wx.setStorageSync('user', userObj)
+      state.user = userObj
+      wx.setStorageSync('user', state.user)
     },
     // 保存收货地址
     setUserAddress(state, address) {
