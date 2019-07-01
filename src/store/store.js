@@ -19,9 +19,7 @@ const store = new Vuex.Store({
     },
     // 添加商品到购物车
     addToCart(state, shopObj) {
-      console.log(shopObj.count)
       if (shopObj.count && shopObj.count !== 0) {
-        console.log('er')
         state.cart.map(item => {
           if (item.P_ID === shopObj.P_ID) {
             item.count ++
@@ -29,7 +27,6 @@ const store = new Vuex.Store({
           }
         })
       } else {
-        console.log('yi')
         shopObj.count = 1
         state.cart.push(shopObj)
       }

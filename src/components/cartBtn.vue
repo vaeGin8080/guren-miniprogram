@@ -20,6 +20,7 @@ export default {
         that.shopObj.count = that.$store.getters.getCountByPid(that.shopObj.P_ID)
         that.shopObj.selected = true
         that.$store.commit("addToCart", that.shopObj)
+        that.$forceUpdate();
       }
     },
     decrFromCart() {
