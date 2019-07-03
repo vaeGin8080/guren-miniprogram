@@ -58,22 +58,50 @@ export default {
       })
     },
     pay() {
-      wx.requestPayment({
-        'timeStamp': new Date().getTime().toString(),
-        'nonceStr': utils.randomStr(),
-        'package': '',
-        'signType': 'MD5',
-        'paySign': '',
-        'success':function(res){
-          console.log(res)
-        },
-        'fail':function(res){
-          console.log(res)
-        },
-        'complete':function(res){
-          console.log(res)
+      // wx.requestPayment({
+      //   'timeStamp': new Date().getTime().toString(),
+      //   'nonceStr': utils.randomStr(),
+      //   'package': '',
+      //   'signType': 'MD5',
+      //   'paySign': '',
+      //   'success':function(res){
+      //     console.log(res)
+      //   },
+      //   'fail':function(res){
+      //     console.log(res)
+      //   },
+      //   'complete':function(res){
+      //     console.log(res)
+      //   }
+      // })
+      wx.cloud.callFunction({
+        name: 'getOpenid',
+        data: {},
+        complete: res => {
+          wx.cloud.callFunction({
+            name: 'wxPay',
+            data: {
+              openid: res.result.openid
+            },
+            complete: res => {
+              wx.requestPayment({
+                timeStamp: res.result.data.timeStamp,
+                nonceStr: res.result.data.nonceStr,
+                package: res.result.data.package,
+                signType: 'MD5',
+                paySign: res.result.data.paySign,
+                success (res) {
+                  console.log('res', res)
+                },
+                fail (err) { 
+                  console.log('err', err)
+                }
+              })
+            }
+          })
         }
       })
+      
     }
   },
   onLoad(option) {

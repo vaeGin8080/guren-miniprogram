@@ -59,7 +59,7 @@ export default {
     let that = this
     if(that.$store.getters.getAddress) {
       that.isChooseAdd = true
-      that.address = that.$store.getters.getAddress()
+      that.address = that.$store.getters.getAddress
     } else {
       that.isChooseAdd = false
     }
