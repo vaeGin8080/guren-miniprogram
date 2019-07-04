@@ -5,7 +5,7 @@ let config = {
   notify_url: 'http://www.weixin.qq.com/wxpay/pay.php',
   key: 'GUREN20190626MIYAO20190626SHEZHI',
   url: 'https://api.mch.weixin.qq.com/pay/unifiedorder',
-  total_fee: 1
+  body: '古仁原生态弄产品'
 }
 
 module.exports = config

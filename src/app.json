@@ -65,6 +65,7 @@
     "van-submit-bar": "/static/vant/submit-bar/index",
     "van-checkbox": "/static/vant/checkbox/index",
     "van-swipe-cell": "/static/vant/swipe-cell/index",
-    "van-stepper": "/static/vant/stepper/index"
+    "van-stepper": "/static/vant/stepper/index",
+    "van-loading": "/static/vant/loading/index"
   }
 }

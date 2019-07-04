@@ -1,7 +1,7 @@
-function bodyData(config, body, nonce_str, openid, out_trade_no, total_fee, sign) {
+function bodyData(config, nonce_str, openid, out_trade_no, total_fee, sign) {
   let bodyData = '<xml>'
   bodyData += '<appid>' + config.appid + '</appid>'
-  bodyData += '<body>' + body + '</body>'
+  bodyData += '<body>' + config.body + '</body>'
   bodyData += '<mch_id>' + config.mch_id + '</mch_id>'
   bodyData += '<nonce_str>' + nonce_str + '</nonce_str>'
   bodyData += '<openid>' + openid + '</openid>'

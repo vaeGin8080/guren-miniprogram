@@ -2,21 +2,22 @@
   <div class="noMember">
     <div class="top">
       <van-tabs :active="activeTab"  @change="currentTab" :border="false" color="#11998e" :animated="true" :swipeable="true">
-        <van-tab :title="tab.name" v-for="(tab, i) in tabList" :key="i"></van-tab>
-      </van-tabs>
-    </div>
-    <div class="container">
-      <div class="card" v-for="(item, index) in goodsList" :key="index">
-        <div class="imgbox"><img :src="host + item.P_LImage" mode="widthFix" @click="showDetail(item.P_ID, goodsList, index)"></div>
-        <div class="infobox">
-          <p class="title">{{ item.P_Name }}</p>
-          <p class="desc">规格：<span>{{ item.OVF_Field1 }}</span></p>
-          <div>
-            <span class="price">￥<b>{{ item.P_MarketPrice }}</b></span>
-            <cart-btn :shopObj="putShop(item)"></cart-btn>
+        <van-tab :title="tab.name" v-for="(tab, i) in tabList" :key="i">
+          <div class="container">
+            <div class="card" v-for="(item, index) in goodsList[i]" :key="index">
+              <div class="imgbox"><img :src="host + item.P_LImage" mode="widthFix" @click="showDetail(item.P_ID, goodsList, index)"></div>
+              <div class="infobox">
+                <p class="title">{{ item.P_Name }}</p>
+                <p class="desc">规格：<span>{{ item.OVF_Field1 }}</span></p>
+                <div>
+                  <span class="price">￥<b>{{ item.P_MarketPrice }}</b></span>
+                  <cart-btn :shopObj="putShop(item)"></cart-btn>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+        </van-tab>
+      </van-tabs>
     </div>
     <van-toast id="van-toast" />
     <van-popup :show="showPopup" @close="closePop" custom-class="pop-style">
@@ -44,7 +45,7 @@
                <p>每项限购两份</p>
              </div>
              <div class="right">
-               <cart-btn :shopObj="putShop(shopDetail)"></cart-btn>
+               <!-- <cart-btn :shopObj="putShop(shopDetail)"></cart-btn> -->
              </div>
            </div>
          </div>
@@ -56,10 +57,10 @@
 <script>
 import CartBtn from '../../components/cartBtn'
 import wxParse from 'mpvue-wxparse'
+import Toast from '../../../dist/wx/static/vant/toast/toast';
 export default {
   data() {
     return {
-      currentCol: '3416',
       tabList: [],
       activeTab: 0,
       host: this.$host,
@@ -87,27 +88,34 @@ export default {
         })
         tabArr.unshift({ cid: '3416', name: '全部' })
         that.tabList = tabArr
-        that.getGoodsList(tabArr[0].cid, 1, that.rows, false)
+        that.getGoodsList()
       })
     },
-    getGoodsList(column, page, rows, flag) {
+    getGoodsList() {
       let that = this
-      that.$fly.get("/GetSearchProduct.asp", { page: page, rows: rows, Column: column, DisplyObj: 'field1,field2,field3,CartQuantity' })
+      let promiseArr = []
+      Toast.loading({
+        mask: false,
+        message: '加载中...',
+        duration: 0
+      })
+      that.tabList.map(item => {
+        let req = that.$fly.get("/GetSearchProduct.asp", { page: 1, rows: 10, Column: item.cid, DisplyObj: 'field1,field2,field3,CartQuantity' })
+        promiseArr.push(req)
+      })
+      Promise.all(promiseArr)
       .then(res => {
-        res.rows.map(item => {
-          item.selectNum = this.$store.getters.getCountByPid(item.P_ID) ? this.$store.getters.getCountByPid(item.P_ID) : 0
+        let arr = []
+        res.map(shops => {
+          arr.push(shops.rows)
         })
-        flag ? res.rows.length !== 0 ? that.goodsList = that.goodsList.concat(res.rows) : that.isBottom = true : that.goodsList = res.rows
+        that.goodsList = arr
+        Toast.clear()
       })
     },
     currentTab(e) {
       let that = this
       that.activeTab = e.mp.detail.index
-      that.currentCol = that.tabList[that.activeTab].cid
-      that.getGoodsList(that.currentCol, 1, that.rows, false)
-      wx.setNavigationBarTitle({
-        title: event.target.title
-      })
     },
     showDetail(pid, detailList, i) {
       let that = this
@@ -141,8 +149,6 @@ export default {
   onLoad(option) {
     let that = this
     that.getTabList()
-    console.log(option.index)
-    that.activeTab = option.index
   },
   onShow() {
     let that = this  
@@ -158,7 +164,16 @@ export default {
   },
   onReachBottom() {
     let that = this
-    that.getGoodsList(that.currentCol, that.page, that.rows, true)
+    Toast.loading({
+      mask: false,
+      message: '加载中...',
+      duration: 0
+    })
+    that.$fly.get("/GetSearchProduct.asp", { page: ++ that.page, rows: 10, Column: that.tabList[that.activeTab].cid, DisplyObj: 'field1,field2,field3,CartQuantity' })
+    .then(res => {
+      that.goodsList[that.activeTab] = that.goodsList[that.activeTab].concat(res.rows)
+      Toast.clear()
+    })
   },
   components: {
     "cart-btn": CartBtn,

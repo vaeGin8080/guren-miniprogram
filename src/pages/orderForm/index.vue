@@ -20,7 +20,7 @@
         <van-cell :value="'合计：￥' + item.O_OrderAmount" :border="false" custom-class="border-bottom"/>
         <van-cell :border="false">
           <van-button type="default" size="small">取消</van-button>
-          <van-button type="warning" size="small" custom-class="payBtn" @click="pay">付款</van-button>
+          <van-button type="warning" size="small" custom-class="payBtn" @click="pay" :data-total_fee="item.O_OrderAmount">付款</van-button>
         </van-cell>
       </div>
     </block>
@@ -57,51 +57,31 @@ export default {
         console.log(res)
       })
     },
-    pay() {
-      // wx.requestPayment({
-      //   'timeStamp': new Date().getTime().toString(),
-      //   'nonceStr': utils.randomStr(),
-      //   'package': '',
-      //   'signType': 'MD5',
-      //   'paySign': '',
-      //   'success':function(res){
-      //     console.log(res)
-      //   },
-      //   'fail':function(res){
-      //     console.log(res)
-      //   },
-      //   'complete':function(res){
-      //     console.log(res)
-      //   }
-      // })
+    pay(e) {
+      let that = this
+      console.log(e)
       wx.cloud.callFunction({
-        name: 'getOpenid',
-        data: {},
+        name: 'wxPay',
+        data: {
+          openid: that.$store.getters.getOpenid,
+          total_fee: e.mp.currentTarget.dataset.total_fee * 100
+        },
         complete: res => {
-          wx.cloud.callFunction({
-            name: 'wxPay',
-            data: {
-              openid: res.result.openid
+          wx.requestPayment({
+            timeStamp: res.result.data.timeStamp,
+            nonceStr: res.result.data.nonceStr,
+            package: res.result.data.package,
+            signType: 'MD5',
+            paySign: res.result.data.paySign,
+            success (res) {
+              console.log('res', res)
             },
-            complete: res => {
-              wx.requestPayment({
-                timeStamp: res.result.data.timeStamp,
-                nonceStr: res.result.data.nonceStr,
-                package: res.result.data.package,
-                signType: 'MD5',
-                paySign: res.result.data.paySign,
-                success (res) {
-                  console.log('res', res)
-                },
-                fail (err) { 
-                  console.log('err', err)
-                }
-              })
+            fail (err) { 
+              console.log('err', err)
             }
           })
         }
       })
-      
     }
   },
   onLoad(option) {

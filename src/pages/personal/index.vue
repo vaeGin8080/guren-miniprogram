@@ -57,9 +57,9 @@
         <img src="/static/images/logo.jpg">
         <p>北京古仁原生态种植专业合作社</p>
         <div>
-          <van-field :value="phoneNum" placeholder="请输入手机号" bind:change="onChange" @blur="inputPhoneNum"/>
-          <van-field :value="smsCode" center clearable placeholder="请输入短信验证码" :border="false" use-button-slot @blur="inputSmsCode">
-            <van-button slot="button" size="small" type="primary" custom-class="getSmsBtn" @change="getSms" :disabled="isSend">{{ isSend ? second : '发送验证码' }}</van-button>
+          <van-field :value="phoneNum" placeholder="请输入手机号" bind:change="onChange" @change="inputPhoneNum"/>
+          <van-field :value="smsCode" center clearable placeholder="请输入短信验证码" :border="false" use-button-slot @change="inputSmsCode">
+            <van-button slot="button" size="small" type="primary" custom-class="getSmsBtn" @click="getSms" :disabled="isSend">{{ isSend ? second : '发送验证码' }}</van-button>
           </van-field>
           <van-button type="default" size="large" custom-class="login" @click="login">登录</van-button>
         </div>
@@ -131,11 +131,12 @@ export default {
     },
     inputPhoneNum(e) {
       let that = this
-      that.phoneNum = e.mp.detail.value
+      that.phoneNum = e.mp.detail
+      console.log(e)
     },
     inputSmsCode(e) {
       let that = this
-      that.smsCode = e.mp.detail.value
+      that.smsCode = e.mp.detail
     },
     login() {
       let that = this

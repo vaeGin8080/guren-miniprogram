@@ -10,10 +10,9 @@ const out_trade_no = Date.parse(new Date())
 const nonce_str = strRandom()
 
 exports.main = async(event, context) => {
-  let body = 'guren'
-  let str = 'appid=' + config.appid + '&body=' + body + '&mch_id=' + config.mch_id + '&nonce_str=' + nonce_str + '&notify_url=' + config.notify_url + '&openid=' + event.openid + '&out_trade_no=' + out_trade_no + '&spbill_create_ip=' + config.spbill_create_ip + '&total_fee=' + config.total_fee + '&trade_type=JSAPI' + '&key=' + config.key
+  let str = 'appid=' + config.appid + '&body=' + config.body + '&mch_id=' + config.mch_id + '&nonce_str=' + nonce_str + '&notify_url=' + config.notify_url + '&openid=' + event.openid + '&out_trade_no=' + out_trade_no + '&spbill_create_ip=' + config.spbill_create_ip + '&total_fee=' + event.total_fee + '&trade_type=JSAPI' + '&key=' + config.key
   let sign = crypto.createHash('md5').update(str).digest('hex')
-  let temp_body_data = bodyData(config, body, nonce_str, event.openid, out_trade_no, config.total_fee, sign)
+  let temp_body_data = bodyData(config, nonce_str, event.openid, out_trade_no, event.total_fee, sign)
   return new Promise((resolve, reject) => {
     request({
       url: config.url,
