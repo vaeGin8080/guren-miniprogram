@@ -59,7 +59,7 @@
         <div>
           <van-field :value="phoneNum" placeholder="请输入手机号" bind:change="onChange" @blur="inputPhoneNum"/>
           <van-field :value="smsCode" center clearable placeholder="请输入短信验证码" :border="false" use-button-slot @blur="inputSmsCode">
-            <van-button slot="button" size="small" type="primary" custom-class="getSmsBtn" @click="getSms" :disabled="isSend">{{ isSend ? second : '发送验证码' }}</van-button>
+            <van-button slot="button" size="small" type="primary" custom-class="getSmsBtn" @change="getSms" :disabled="isSend">{{ isSend ? second : '发送验证码' }}</van-button>
           </van-field>
           <van-button type="default" size="large" custom-class="login" @click="login">登录</van-button>
         </div>
@@ -81,7 +81,6 @@ export default {
       smsCode: '',
       isSend: false,
       second: 60,
-      openid: '',
       userinfo: null
     }
   },
@@ -93,7 +92,7 @@ export default {
         that.showLoginBox = true
         wx.cloud.callFunction({ name: 'getOpenid' })
         .then(res => {
-          that.openid = res.result.openid
+          that.userinfo.openid = res.result.openid
         })
       } 
     },
@@ -142,13 +141,13 @@ export default {
       let that = this
       let sendData = {
         action: "GetOpenidLogin",
-        WXOpenid2: that.openid
+        WXOpenid2: that.userinfo.openid
       }
       that.$fly.get("/GetUserLogin.asp", sendData)
       .then(res => {
         let send = {
           action: "GetOpenidRegister",
-          WXOpenid2: that.openid,
+          WXOpenid2: that.userinfo.openid,
           Mobile: that.phoneNum,
           CheckMobileCode: that.smsCode
         }

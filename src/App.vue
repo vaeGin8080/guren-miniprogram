@@ -1,6 +1,25 @@
 <script>
 export default {
-  created () {
+  onShow(){
+    let that = this
+    let sendData = {
+      action: "GetOpenidLogin",
+      WXOpenid2: that.$store.getters.getOpenid
+    }
+    that.$fly.get("/GetUserLogin.asp", sendData)
+    .then(res => {
+      if(res.code === 200) {
+        that.$store.commit('updateToken', res.token)
+      } else {
+        return
+      }
+    })
+    if (this.$store.getters.getTotalCount > 0) {
+      wx.setTabBarBadge({
+        index: 2,
+        text: this.$store.getters.getTotalCount.toString()
+      })
+    }
   },
   watch: {
     '$store.getters.getTotalCount': function() {

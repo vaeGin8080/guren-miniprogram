@@ -18,6 +18,10 @@ const store = new Vuex.Store({
       state.user.address = address
       wx.setStorageSync('user', state.user)
     },
+    updateToken(state, token) {
+      state.user.token = token
+      wx.setStorageSync('user', state.user)
+    },
     // 添加商品到购物车
     addToCart(state, shopObj) {
       if (shopObj.count && shopObj.count !== 0) {
@@ -96,6 +100,9 @@ const store = new Vuex.Store({
     },
     getAddress: (state) => {
       return state.user.address
+    },
+    getOpenid: (state) => {
+      return state.user.openid
     },
     // 根据 pid 获取购物车商品的数量
     getCountByPid: (state) => (pid) => {
